@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_login/home/home_page.dart';
+import 'package:google_login/bloc/auth_bloc.dart';
 
 import 'bloc/login_bloc.dart';
 import 'form_body.dart';
@@ -85,12 +85,12 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 } else if (state is LoginLoadingState) {
                   _showLoading = !_showLoading;
+                } else if (state is LoginSuccessState) {
+                  BlocProvider.of<AuthBloc>(context)
+                      .add(VerifyAuthenticationEvent());
                 }
               },
               builder: (context, state) {
-                if (state is LoginSuccessState) {
-                  return HomePage();
-                }
                 return SingleChildScrollView(
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 60, horizontal: 24),
