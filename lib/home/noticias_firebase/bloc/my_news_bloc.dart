@@ -88,7 +88,11 @@ class MyNewsBloc extends Bloc<MyNewsEvent, MyNewsState> {
   // cada elemento agregarlo a una lista.
   Future<List<New>> _getNoticias() async {
     try {
-      var noticias = await _cFirestore.collection("noticias").get();
+      var noticias = await _cFirestore
+          .collection("noticias")
+          .orderBy("publishedAt", descending: true)
+          .get();
+
       return noticias.docs
           .map(
             (element) => New(
