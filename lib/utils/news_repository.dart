@@ -18,16 +18,22 @@ class NewsRepository {
     // TODO: utilizar variable q="$query" para buscar noticias en especifico
     // https://newsapi.org/v2/top-headlines?country=mx&q=futbol&category=sports&apiKey&apiKey=laAPIkey
     // crear modelos antes
+    var querParameters = {
+      "apiKey": apiKey,
+    };
+
+    if (query == "") {
+      querParameters["category"] = "sports";
+      querParameters["country"] = "mx";
+    } else {
+      querParameters["q"] = query;
+    }
 
     final _uri = Uri(
       scheme: 'https',
       host: 'newsapi.org',
       path: 'v2/top-headlines',
-      queryParameters: {
-        "country": "mx",
-        "category": "sports",
-        "apiKey": apiKey
-      },
+      queryParameters: querParameters,
     );
     // TODO: completar request y deserializacion
     try {
