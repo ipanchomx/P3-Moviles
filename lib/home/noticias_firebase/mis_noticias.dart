@@ -13,41 +13,55 @@ class MisNoticias extends StatefulWidget {
 
 class _MisNoticiasState extends State<MisNoticias> {
   @override
+  void initState() {
+    // TODO: implement initState
+    BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MyNewsBloc()..add(RequestAllNewsEvent()),
-      child: BlocConsumer<MyNewsBloc, MyNewsState>(
-        listener: (context, state) {
-          if (state is LoadingState) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text("Cargando..."),
-                ),
-              );
-          } else if (state is ErrorMessageState) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Text("${state.errorMsg}"),
-                ),
-              );
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadedNewsState) {
-            return ListView.builder(
+    return BlocConsumer<MyNewsBloc, MyNewsState>(
+      listener: (context, state) {
+        if (state is LoadingState) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("Cargando..."),
+              ),
+            );
+        } else if (state is ErrorMessageState) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("${state.errorMsg}"),
+              ),
+            );
+        } else if (state is SavedNewState) {
+          print("HOLA SI PASÓ WEY");
+          BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
+        }
+      },
+      builder: (context, state) {
+        if (state is LoadedNewsState) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
+              return;
+            },
+            child: ListView.builder(
               itemCount: state.noticiasList.length,
               itemBuilder: (BuildContext context, int index) {
                 return ItemNoticia(noticia: state.noticiasList[index]);
               },
-            );
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+            ),
+          );
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }
