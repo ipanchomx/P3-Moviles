@@ -14,7 +14,6 @@ class MisNoticias extends StatefulWidget {
 class _MisNoticiasState extends State<MisNoticias> {
   @override
   void initState() {
-    // TODO: implement initState
     BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
 
     super.initState();

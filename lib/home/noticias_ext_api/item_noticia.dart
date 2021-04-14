@@ -12,7 +12,6 @@ class ItemNoticia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-// TODO: Cambiar image.network por Extended Image con place holder en caso de error o mientras descarga la imagen
     return Container(
       child: Padding(
         padding: EdgeInsets.all(6.0),
@@ -99,17 +98,18 @@ class ItemNoticia extends StatelessWidget {
     String urlImage = noticia.urlToImage ??
         "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png";
     final response = await get(Uri.parse(urlImage));
-    String extension = urlImage.split(".").last;
-    final bytes = response.bodyBytes;
+    String extension = urlImage.split(".").last.split('?').first;
 
     final Directory temp = await getTemporaryDirectory();
-    final File imageFile = File('${temp.path}/tempImage');
+    final File imageFile =
+        File('${temp.path}/${noticia.title ?? "noticia"}.$extension');
     imageFile.writeAsBytesSync(response.bodyBytes);
 
     Share.shareFiles(
-      ['${temp.path}/tempImage.$extension'],
+      ['${temp.path}/${noticia.title ?? "noticia"}.$extension'],
       text:
-          'Checa está noticia ${noticia.title ?? "Noticia"} - ${noticia.description ?? "Sin descripcion"}" \n ${noticia.url ?? ""}',
+          '${noticia.title ?? "Noticia"} - ${noticia.description ?? "Sin descripcion"}" \n ${noticia.url ?? ""}',
+      subject: 'Checa esta noticia: ',
     );
   }
 }
