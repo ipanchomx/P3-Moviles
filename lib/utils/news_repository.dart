@@ -8,16 +8,13 @@ import 'package:http/http.dart';
 class NewsRepository {
   List<New> _noticiasList;
 
-  static final NewsRepository _NewsRepository = NewsRepository._internal();
+  static final NewsRepository _newsRepository = NewsRepository._internal();
   factory NewsRepository() {
-    return _NewsRepository;
+    return _newsRepository;
   }
 
   NewsRepository._internal();
   Future<List<New>> getAvailableNoticias(String query) async {
-    // TODO: utilizar variable q="$query" para buscar noticias en especifico
-    // https://newsapi.org/v2/top-headlines?country=mx&q=futbol&category=sports&apiKey&apiKey=laAPIkey
-    // crear modelos antes
     var querParameters = {
       "apiKey": apiKey,
     };
@@ -35,7 +32,6 @@ class NewsRepository {
       path: 'v2/top-headlines',
       queryParameters: querParameters,
     );
-    // TODO: completar request y deserializacion
     try {
       final response = await get(_uri);
       if (response.statusCode == HttpStatus.ok) {
