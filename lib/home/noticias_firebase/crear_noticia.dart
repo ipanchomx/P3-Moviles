@@ -45,6 +45,14 @@ class _CrearNoticiaState extends State<CrearNoticia> {
                 content: Text("Noticia guardada.."),
               ),
             );
+        } else if (state is ErrorMessageState) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text("${state.errorMsg}"),
+              ),
+            );
         }
       },
       builder: (context, state) {
