@@ -41,7 +41,6 @@ class _MisNoticiasState extends State<MisNoticias> {
               ),
             );
         } else if (state is SavedNewState) {
-          print("HOLA SI PASÓ WEY");
           BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
         }
       },
