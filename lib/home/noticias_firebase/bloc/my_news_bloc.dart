@@ -54,13 +54,13 @@ class MyNewsBloc extends Bloc<MyNewsEvent, MyNewsState> {
       if (_selectedPicture == null) return null;
       // define upload task
       UploadTask task = FirebaseStorage.instance
-          .ref("noticias/imagen_${stamp}.png")
+          .ref("noticias/imagen_$stamp.png")
           .putFile(_selectedPicture);
       // execute task
       await task;
       // recuperar url del documento subido
       return await task.storage
-          .ref("noticias/imagen_${stamp}.png")
+          .ref("noticias/imagen_$stamp.png")
           .getDownloadURL();
     } on FirebaseException catch (e) {
       // e.g, e.code == 'canceled'
