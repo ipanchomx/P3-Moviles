@@ -30,6 +30,7 @@ class _CrearNoticiaState extends State<CrearNoticia> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                behavior: SnackBarBehavior.floating,
                 content: Text("Imagen seleccionada"),
               ),
             );
@@ -42,6 +43,7 @@ class _CrearNoticiaState extends State<CrearNoticia> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                behavior: SnackBarBehavior.floating,
                 content: Text("Noticia guardada.."),
               ),
             );
@@ -50,6 +52,7 @@ class _CrearNoticiaState extends State<CrearNoticia> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                behavior: SnackBarBehavior.floating,
                 content: Text("${state.errorMsg}"),
               ),
             );

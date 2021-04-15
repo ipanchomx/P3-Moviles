@@ -28,6 +28,7 @@ class _MisNoticiasState extends State<MisNoticias> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                behavior: SnackBarBehavior.floating,
                 content: Text("Cargando..."),
               ),
             );
@@ -36,6 +37,7 @@ class _MisNoticiasState extends State<MisNoticias> {
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
+                behavior: SnackBarBehavior.floating,
                 content: Text("${state.errorMsg}"),
               ),
             );
