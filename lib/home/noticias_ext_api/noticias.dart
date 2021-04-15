@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_login/home/noticias_ext_api/bloc/api_news_bloc.dart';
+import 'package:google_login/home/noticias_firebase/bloc/my_news_bloc.dart'
+    as BLOC;
 import 'package:google_login/models/new.dart';
 
 import 'item_noticia.dart';
@@ -15,6 +18,8 @@ class Noticias extends StatefulWidget {
 class _NoticiasState extends State<Noticias> {
   ApiNewsBloc _bloc;
   String _currentQuery = "";
+  final _cFirestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -72,9 +77,15 @@ class _NoticiasState extends State<Noticias> {
             }
           }, builder: (context, state) {
             if (state is LoadedNewsState) {
-              return NewsFound(noticiasList: state.noticiasList);
+              return NewsFound(
+                noticiasList: state.noticiasList,
+                function: _saveNoticias,
+              );
             } else if (state is LoadedSavedNewsState) {
-              return NewsFound(noticiasList: state.noticiasList);
+              return NewsFound(
+                noticiasList: state.noticiasList,
+                function: _saveNoticias,
+              );
             } else if (state is ErrorMessageState) {
               return Center(
                 child: Text("Algo salio mal", style: TextStyle(fontSize: 32)),
@@ -99,14 +110,42 @@ class _NoticiasState extends State<Noticias> {
   fetchNews(String query) {
     _bloc.add(RequestApiNewsEvent(query: query));
   }
+
+  Future<void> _saveNoticias(
+    New noticia,
+  ) async {
+    try {
+      await _cFirestore.collection("noticias").add(noticia.toJson());
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text("Noticia guardada exitosamente!"),
+          ),
+        );
+      BlocProvider.of<BLOC.MyNewsBloc>(context).add(BLOC.RequestAllNewsEvent());
+    } catch (e) {
+      print("Error: $e");
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text("La noticia no se pudo guardar!"),
+          ),
+        );
+    }
+  }
 }
 
 class NewsFound extends StatelessWidget {
   final List<New> noticiasList;
-
+  final Function function;
   const NewsFound({
     @required this.noticiasList,
     Key key,
+    @required this.function,
   }) : super(key: key);
 
   @override
@@ -127,6 +166,10 @@ class NewsFound extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ItemNoticia(
                   noticia: noticiasList[index],
+                  fromApi: true,
+                  saveNew: () {
+                    function(noticiasList[index]);
+                  },
                 );
               },
             ),

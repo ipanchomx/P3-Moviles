@@ -23,16 +23,7 @@ class _MisNoticiasState extends State<MisNoticias> {
   Widget build(BuildContext context) {
     return BlocConsumer<MyNewsBloc, MyNewsState>(
       listener: (context, state) {
-        if (state is LoadingState) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                behavior: SnackBarBehavior.floating,
-                content: Text("Cargando..."),
-              ),
-            );
-        } else if (state is ErrorMessageState) {
+        if (state is ErrorMessageState) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -55,7 +46,11 @@ class _MisNoticiasState extends State<MisNoticias> {
             child: ListView.builder(
               itemCount: state.noticiasList.length,
               itemBuilder: (BuildContext context, int index) {
-                return ItemNoticia(noticia: state.noticiasList[index]);
+                return ItemNoticia(
+                  noticia: state.noticiasList[index],
+                  fromApi: false,
+                  saveNew: () {},
+                );
               },
             ),
           );
