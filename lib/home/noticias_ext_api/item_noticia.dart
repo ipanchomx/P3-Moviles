@@ -9,7 +9,15 @@ import 'package:path_provider/path_provider.dart';
 
 class ItemNoticia extends StatelessWidget {
   final New noticia;
-  ItemNoticia({Key key, @required this.noticia}) : super(key: key);
+  final bool fromApi;
+  final Function saveNew;
+
+  ItemNoticia({
+    Key key,
+    @required this.noticia,
+    @required this.fromApi,
+    @required this.saveNew,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +86,23 @@ class ItemNoticia extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                                child: Icon(
-                                  Icons.share,
-                                  size: 20,
+                            if (fromApi)
+                              IconButton(
+                                icon: Icon(
+                                  Icons.cloud_download,
+                                  size: 25,
                                 ),
-                                onTap: () {
-                                  shareArticle(noticia, context);
-                                }),
+                                onPressed: saveNew,
+                              ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.share,
+                                size: 25,
+                              ),
+                              onPressed: () {
+                                shareArticle(noticia, context);
+                              },
+                            )
                           ],
                         )
                       ],

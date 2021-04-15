@@ -27,6 +27,8 @@ class LoadedSavedNewsState extends ApiNewsState {
   List<Object> get props => [noticiasList];
 }
 
+class SavedNewSuccesState extends ApiNewsState {}
+
 class ErrorMessageState extends ApiNewsState {
   final String errorMsg;
 
