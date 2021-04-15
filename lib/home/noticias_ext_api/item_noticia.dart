@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:google_login/models/new.dart';
 import 'package:share/share.dart';
@@ -22,11 +23,16 @@ class ItemNoticia extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Image.network(
-                    noticia.urlToImage ??
-                        "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png",
-                    fit: BoxFit.fitHeight,
-                  ),
+                  child:
+                      (noticia.urlToImage == null || noticia.urlToImage == "")
+                          ? Image.asset(
+                              'assets/placeholder-image.png',
+                              fit: BoxFit.fitHeight,
+                            )
+                          : Image.network(
+                              noticia.urlToImage,
+                              fit: BoxFit.fitHeight,
+                            ),
                 ),
                 Expanded(
                   flex: 3,
@@ -78,7 +84,7 @@ class ItemNoticia extends StatelessWidget {
                                   size: 20,
                                 ),
                                 onTap: () {
-                                  shareImage(noticia);
+                                  shareArticle(noticia, context);
                                 }),
                           ],
                         )
@@ -94,22 +100,46 @@ class ItemNoticia extends StatelessWidget {
     );
   }
 
-  void shareImage(New noticia) async {
-    String urlImage = noticia.urlToImage ??
-        "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png";
-    final response = await get(Uri.parse(urlImage));
-    String extension = urlImage.split(".").last.split('?').first;
+  void shareArticle(New noticia, context) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult != ConnectivityResult.mobile &&
+        connectivityResult != ConnectivityResult.wifi) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text("No se puede compartir, No hay conexión."),
+          ),
+        );
+      return;
+    }
+    try {
+      String urlImage = noticia.urlToImage ??
+          "https://socialistmodernism.com/wp-content/uploads/2017/07/placeholder-image.png";
+      final response = await get(Uri.parse(urlImage));
+      String extension = urlImage.split(".").last.split('?').first;
 
-    final Directory temp = await getTemporaryDirectory();
-    final File imageFile =
-        File('${temp.path}/${noticia.title ?? "noticia"}.$extension');
-    imageFile.writeAsBytesSync(response.bodyBytes);
+      final Directory temp = await getTemporaryDirectory();
+      final File imageFile =
+          File('${temp.path}/${noticia.title ?? "noticia"}.$extension');
+      imageFile.writeAsBytesSync(response.bodyBytes);
 
-    Share.shareFiles(
-      ['${temp.path}/${noticia.title ?? "noticia"}.$extension'],
-      text:
-          '${noticia.title ?? "Noticia"} - ${noticia.description ?? "Sin descripcion"}" \n ${noticia.url ?? ""}',
-      subject: 'Checa esta noticia: ',
-    );
+      Share.shareFiles(
+        ['${temp.path}/${noticia.title ?? "noticia"}.$extension'],
+        text:
+            '${noticia.title ?? "Noticia"} - ${noticia.description ?? "Sin descripcion"}" \n ${noticia.url ?? ""}',
+        subject: 'Checa esta noticia: ',
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text("Unable to share article."),
+          ),
+        );
+    }
   }
 }
