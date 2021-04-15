@@ -82,11 +82,13 @@ class ArticleDetail extends StatelessWidget {
                   if (article.url != null) {
                     launch(
                       article.url,
+                      enableJavaScript: true,
                       forceWebView: true,
                     );
                   } else {
                     launch(
                       "https://google.com",
+                      enableJavaScript: true,
                       forceWebView: true,
                     );
                   }
