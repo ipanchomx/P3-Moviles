@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_login/home/noticias_ext_api/bloc/api_news_bloc.dart';
@@ -115,6 +116,10 @@ class _NoticiasState extends State<Noticias> {
     New noticia,
   ) async {
     try {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult != ConnectivityResult.mobile &&
+          connectivityResult != ConnectivityResult.wifi)
+        throw Exception("Offline");
       await _cFirestore.collection("noticias").add(noticia.toJson());
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
