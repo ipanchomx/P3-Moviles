@@ -23,7 +23,6 @@ class MyNewsBloc extends Bloc<MyNewsEvent, MyNewsState> {
     MyNewsEvent event,
   ) async* {
     if (event is RequestAllNewsEvent) {
-      // conectarnos a firebase noSQL y traernos los docs
       yield LoadingState();
       yield LoadedNewsState(noticiasList: await _getNoticias() ?? []);
     } else if (event is PickImageEvent) {
@@ -31,16 +30,10 @@ class MyNewsBloc extends Bloc<MyNewsEvent, MyNewsState> {
       _selectedPicture = await _getImage();
       yield PickedImageState(image: _selectedPicture);
     } else if (event is SaveNewElementEvent) {
-      // 1) subir archivo a bucket
-      // 2) extraer url del archivo
-      // 3) agregar url al elemento de firebase
-      // 4) guardar elemento en firebase
-      // 5) actualizar lista con RequestAllNewsEvent
       String imageUrl = await _uploadFile();
       if (imageUrl != null) {
         yield LoadingState();
         await _saveNoticias(event.noticia.copyWith(urlToImage: imageUrl));
-        // yield LoadedNewsState(noticiasList: await _getNoticias() ?? []);
         yield SavedNewState();
       } else {
         yield ErrorMessageState(errorMsg: "No se pudo guardar la imagen");
