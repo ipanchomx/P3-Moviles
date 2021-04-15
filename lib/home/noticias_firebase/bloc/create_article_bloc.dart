@@ -39,6 +39,7 @@ class CreateArticleBloc extends Bloc<CreateArticleEvent, CreateArticleState> {
           yield LoadingState();
           await _saveNoticias(event.noticia.copyWith(urlToImage: imageUrl));
           yield SavedNewState();
+          _selectedPicture = null;
         } else {
           throw Exception("Img url = null");
         }
