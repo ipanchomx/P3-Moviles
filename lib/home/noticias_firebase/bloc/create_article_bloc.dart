@@ -22,17 +22,28 @@ class CreateArticleBloc extends Bloc<CreateArticleEvent, CreateArticleState> {
     CreateArticleEvent event,
   ) async* {
     if (event is PickImageEvent) {
-      yield LoadingState();
-      _selectedPicture = await _getImage();
-      yield PickedImageState(image: _selectedPicture);
-    } else if (event is SaveNewElementEvent) {
-      String imageUrl = await _uploadFile();
-      if (imageUrl != null) {
+      try {
         yield LoadingState();
-        await _saveNoticias(event.noticia.copyWith(urlToImage: imageUrl));
-        yield SavedNewState();
-      } else {
-        yield ErrorMessageState(errorMsg: "No se pudo guardar la imagen");
+        _selectedPicture = await _getImage();
+        yield PickedImageState(image: _selectedPicture);
+      } catch (e) {
+        yield ErrorMessageState(errorMsg: "No se pudo obtener la imagen.");
+      }
+    } else if (event is SaveNewElementEvent) {
+      if (_selectedPicture == null) {
+        yield ErrorMessageState(errorMsg: "Error. No se seleccionó imagen.");
+      }
+      String imageUrl = await _uploadFile();
+      try {
+        if (imageUrl != null) {
+          yield LoadingState();
+          await _saveNoticias(event.noticia.copyWith(urlToImage: imageUrl));
+          yield SavedNewState();
+        } else {
+          throw Exception("Img url = null");
+        }
+      } catch (e) {
+        yield ErrorMessageState(errorMsg: "No se pudo guardar la noticia");
       }
     }
   }
@@ -82,8 +93,7 @@ class CreateArticleBloc extends Bloc<CreateArticleEvent, CreateArticleState> {
     if (pickedFile != null) {
       return File(pickedFile.path);
     } else {
-      print('No image selected.');
-      return null;
+      throw Exception("Error");
     }
   }
 }

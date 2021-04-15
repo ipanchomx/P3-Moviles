@@ -80,17 +80,15 @@ class ArticleDetail extends StatelessWidget {
               child: InkWell(
                 onTap: () async {
                   if (article.url != null) {
-                    launch(
-                      article.url,
-                      enableJavaScript: true,
-                      forceWebView: true,
-                    );
+                    launch(article.url,
+                        enableJavaScript: true,
+                        forceWebView: true,
+                        enableDomStorage: true);
                   } else {
-                    launch(
-                      "https://google.com",
-                      enableJavaScript: true,
-                      forceWebView: true,
-                    );
+                    launch("https://google.com",
+                        enableJavaScript: true,
+                        forceWebView: true,
+                        enableDomStorage: true);
                   }
                 },
                 child: Text(
