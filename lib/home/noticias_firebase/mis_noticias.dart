@@ -32,8 +32,6 @@ class _MisNoticiasState extends State<MisNoticias> {
                 content: Text("${state.errorMsg}"),
               ),
             );
-        } else if (state is SavedNewState) {
-          BlocProvider.of<MyNewsBloc>(context).add(RequestAllNewsEvent());
         }
       },
       builder: (context, state) {

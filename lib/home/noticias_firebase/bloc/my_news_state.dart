@@ -19,18 +19,6 @@ class LoadedNewsState extends MyNewsState {
   List<Object> get props => [noticiasList];
 }
 
-class PickedImageState extends MyNewsState {
-  final File image;
-
-  PickedImageState({@required this.image});
-  @override
-  List<Object> get props => [image];
-}
-
-class SavedNewState extends MyNewsState {
-  List<Object> get props => [];
-}
-
 class ErrorMessageState extends MyNewsState {
   final String errorMsg;
 
