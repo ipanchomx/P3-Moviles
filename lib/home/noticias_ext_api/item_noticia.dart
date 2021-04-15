@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:google_login/article-detail/article_detail.dart';
 import 'package:google_login/models/new.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart';
@@ -42,37 +43,52 @@ class ItemNoticia extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          "${noticia.title}",
-                          maxLines: 1,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          "${noticia.publishedAt}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          "${noticia.description ?? "Descripcion no disponible"}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          "${noticia.author ?? "Autor no disponible"}",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 12,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ArticleDetail(article: noticia),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                "${noticia.title}",
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "${noticia.publishedAt}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "${noticia.description ?? "Descripcion no disponible"}",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "${noticia.author ?? "Autor no disponible"}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Row(

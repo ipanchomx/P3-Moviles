@@ -28,6 +28,7 @@ dependencies:
   hive: ^2.0.3
   hive_flutter: ^1.0.0
   connectivity: ^3.0.3
+  url_launcher: ^6.0.3
 
 dev_dependencies:
   flutter_test:
